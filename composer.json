@@ -1,0 +1,30 @@
+{
+    "name": "exs/lander-tracking-awe-bundle",
+    "type": "symfony-bundle",
+    "description": "This bundle adds a new AWE's specific extracter and formatter for EXSLanderTrackingAWEBundle.",
+    "keywords": ["Symfony2", "bundle", "tracking", "parameter"],
+    "homepage": "",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "Ex-Situ Marketing",
+            "email": "dev@ex-situ.com"
+        }
+    ],
+    "require": {
+        "php": "~5.5|~7.0",
+        "exs/lander-tracking-house-bundle": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.8"
+    },
+    "autoload": {
+        "psr-4": { "EXS\\LanderTrackingAWEBundle\\": "" }
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}
+
