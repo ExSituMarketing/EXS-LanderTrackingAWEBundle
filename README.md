@@ -1,5 +1,7 @@
 # EXS-LanderTrackingAWEBundle
 
+[![Build Status](https://travis-ci.org/ExSituMarketing/EXS-LanderTrackingAWEBundle.svg)](https://travis-ci.org/ExSituMarketing/EXS-LanderTrackingAWEBundle)
+
 ## What is this bundle doing ?
 
 This bundle is not a standalone bundle and requires `EXS-LanderTrackingHouseBundle`.
