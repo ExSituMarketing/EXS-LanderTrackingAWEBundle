@@ -3,7 +3,7 @@
     "type": "symfony-bundle",
     "description": "This bundle adds a new AWE's specific extracter and formatter for EXSLanderTrackingAWEBundle.",
     "keywords": ["Symfony2", "bundle", "tracking", "parameter"],
-    "homepage": "",
+    "homepage": "https://github.com/ExSituMarketing/EXS-LanderTrackingAWEBundle",
     "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -27,4 +27,3 @@
         "bin-dir": "bin"
     }
 }
-
