@@ -19,16 +19,19 @@ class AweTrackingParameterManagerTest extends \PHPUnit_Framework_TestCase
         $request->query = $query;
 
         $cookies = $this->prophesize(ParameterBag::class);
-        $cookies->has('cmp')->willReturn(false)->shouldBeCalledTimes(1);
+        $cookies->get('cmp', 1)->willReturn(1)->shouldBeCalledTimes(1);
         $cookies->has('exid')->willReturn(false)->shouldBeCalledTimes(1);
 
         $request->cookies = $cookies;
 
-        $manager = new AweTrackingParameterManager();
+        $manager = new AweTrackingParameterManager(1);
 
         $result = $manager->extract($request->reveal());
 
-        $this->assertEmpty($result);
+        $this->assertCount(1, $result);
+
+        $this->assertArrayHasKey('cmp', $result);
+        $this->assertEquals(1, $result['cmp']);
     }
 
     public function testExtractWithoutParametersButCookies()
@@ -42,17 +45,15 @@ class AweTrackingParameterManagerTest extends \PHPUnit_Framework_TestCase
         $request->query = $query;
 
         $cookies = $this->prophesize(ParameterBag::class);
-        $cookies->has('cmp')->willReturn(true)->shouldBeCalledTimes(1);
-        $cookies->get('cmp')->willReturn(123)->shouldBeCalledTimes(1);
+        $cookies->get('cmp', 1)->willReturn(123)->shouldBeCalledTimes(1);
 
         $cookies->has('exid')->willReturn(true)->shouldBeCalledTimes(1);
-        $cookies->has('visit')->willReturn(true)->shouldBeCalledTimes(1);
         $cookies->get('exid')->willReturn('UUID987654321')->shouldBeCalledTimes(1);
-        $cookies->get('visit')->willReturn(5)->shouldBeCalledTimes(1);
+        $cookies->get('visit', 1)->willReturn(5)->shouldBeCalledTimes(1);
 
         $request->cookies = $cookies;
 
-        $manager = new AweTrackingParameterManager();
+        $manager = new AweTrackingParameterManager(1);
 
         $result = $manager->extract($request->reveal());
 
@@ -78,7 +79,7 @@ class AweTrackingParameterManagerTest extends \PHPUnit_Framework_TestCase
 
         $request->query = $query;
 
-        $manager = new AweTrackingParameterManager();
+        $manager = new AweTrackingParameterManager(1);
 
         $result = $manager->extract($request->reveal());
 
@@ -98,13 +99,15 @@ class AweTrackingParameterManagerTest extends \PHPUnit_Framework_TestCase
     {
         $trackingParameters = new ParameterBag();
 
-        $manager = new AweTrackingParameterManager();
+        $manager = new AweTrackingParameterManager(1);
 
         $result = $manager->format($trackingParameters);
 
         $this->assertCount(2, $result);
+
         $this->assertArrayHasKey('prm[campaign_id]', $result);
-        $this->assertNull($result['prm[campaign_id]']);
+        $this->assertEquals(1, $result['prm[campaign_id]']);
+
         $this->assertArrayHasKey('subAffId', $result);
         $this->assertNull($result['subAffId']);
     }
@@ -118,7 +121,7 @@ class AweTrackingParameterManagerTest extends \PHPUnit_Framework_TestCase
             'foreign_id' => 456,
         ]);
 
-        $manager = new AweTrackingParameterManager();
+        $manager = new AweTrackingParameterManager(1);
 
         $result = $manager->format($trackingParameters);
 

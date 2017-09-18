@@ -1,6 +1,8 @@
 services:
     exs_tracking.awe_manager:
         class: 'EXS\LanderTrackingAWEBundle\Service\TrackingParameterManager\AweTrackingParameterManager'
+        arguments:
+            - '%exs_lander_tracking_awe.default_cmp%'
         tags:
             - { name: 'exs_tracking.parameter_extracter' }
             - { name: 'exs_tracking.parameter_formatter' }
