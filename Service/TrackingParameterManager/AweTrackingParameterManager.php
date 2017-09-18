@@ -20,11 +20,6 @@ class AweTrackingParameterManager implements TrackingParameterExtracterInterface
     private $defaultCmp;
 
     /**
-     * @var int
-     */
-    private $defaultVisit;
-
-    /**
      * AweTrackingParameterManager constructor.
      *
      * @param $defaultCmp
@@ -32,7 +27,6 @@ class AweTrackingParameterManager implements TrackingParameterExtracterInterface
     public function __construct($defaultCmp)
     {
         $this->defaultCmp = $defaultCmp;
-        $this->defaultVisit = 1;
     }
 
     /**
@@ -56,9 +50,12 @@ class AweTrackingParameterManager implements TrackingParameterExtracterInterface
             /** Get 'exid' and 'visit' from 'subAffId' query parameter. */
             $trackingParameters['exid'] = $matches['exid'];
             $trackingParameters['visit'] = $matches['visit'];
-        } elseif ($request->cookies->has('exid')) {
+        } elseif (
+            $request->cookies->has('exid')
+            && $request->cookies->has('visit')
+        ) {
             $trackingParameters['exid'] = $request->cookies->get('exid');
-            $trackingParameters['visit'] = $request->cookies->get('visit', $this->defaultVisit);
+            $trackingParameters['visit'] = $request->cookies->get('visit');
         }
 
         return $trackingParameters;
@@ -70,11 +67,14 @@ class AweTrackingParameterManager implements TrackingParameterExtracterInterface
     public function format(ParameterBag $trackingParameters)
     {
         $subAffId = null;
-        if ($trackingParameters->has('exid')) {
+        if (
+            $trackingParameters->has('exid')
+            && $trackingParameters->has('visit')
+        ) {
             $subAffId = sprintf(
                 '%s~%s',
                 $trackingParameters->get('exid'),
-                $trackingParameters->get('visit', $this->defaultVisit)
+                $trackingParameters->get('visit')
             );
         }
 
