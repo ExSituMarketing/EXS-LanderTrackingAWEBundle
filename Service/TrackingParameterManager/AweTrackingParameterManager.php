@@ -3,16 +3,16 @@
 namespace EXS\LanderTrackingAWEBundle\Service\TrackingParameterManager;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Request;
-use EXS\LanderTrackingHouseBundle\Service\TrackingParameterManager\TrackingParameterExtracterInterface;
 use EXS\LanderTrackingHouseBundle\Service\TrackingParameterManager\TrackingParameterFormatterInterface;
+use EXS\LanderTrackingHouseBundle\Service\TrackingParameterManager\TrackingParameterInitializerInterface;
+use EXS\LanderTrackingHouseBundle\Service\TrackingParameterManager\TrackingParameterQueryExtracterInterface;
 
 /**
  * Class AweTrackingParameterManager
  *
  * @package EXS\LanderTrackingAWEBundle\Service\TrackingParameterManager
  */
-class AweTrackingParameterManager implements TrackingParameterExtracterInterface, TrackingParameterFormatterInterface
+class AweTrackingParameterManager implements TrackingParameterQueryExtracterInterface, TrackingParameterFormatterInterface, TrackingParameterInitializerInterface
 {
     /**
      * @var int
@@ -32,30 +32,22 @@ class AweTrackingParameterManager implements TrackingParameterExtracterInterface
     /**
      * {@inheritdoc}
      */
-    public function extract(Request $request)
+    public function extractFromQuery(ParameterBag $query)
     {
         $trackingParameters = [];
 
-        if (null !== $cmp = $request->query->get('prm[campaign_id]')) {
+        if (null !== $cmp = $query->get('prm[campaign_id]')) {
             /** Get 'cmp' from 'prm[campaign_id]' query parameter. */
             $trackingParameters['cmp'] = $cmp;
-        } else {
-            $trackingParameters['cmp'] = $request->cookies->get('cmp', $this->defaultCmp);
         }
 
         if (
-            (null !== $subAffId = $request->query->get('subAffId'))
+            (null !== $subAffId = $query->get('subAffId'))
             && (preg_match('`^(?<exid>[a-z0-9]+)~(?<visit>[a-z0-9]+)$`i', $subAffId, $matches))
         ) {
             /** Get 'exid' and 'visit' from 'subAffId' query parameter. */
             $trackingParameters['exid'] = $matches['exid'];
             $trackingParameters['visit'] = $matches['visit'];
-        } elseif (
-            $request->cookies->has('exid')
-            && $request->cookies->has('visit')
-        ) {
-            $trackingParameters['exid'] = $request->cookies->get('exid');
-            $trackingParameters['visit'] = $request->cookies->get('visit');
         }
 
         return $trackingParameters;
@@ -79,8 +71,18 @@ class AweTrackingParameterManager implements TrackingParameterExtracterInterface
         }
 
         return [
-            'prm[campaign_id]' => $trackingParameters->get('cmp', $this->defaultCmp),
+            'prm[campaign_id]' => $trackingParameters->get('cmp'),
             'subAffId' => $subAffId,
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function initialize()
+    {
+        return [
+            'cmp' => $this->defaultCmp,
         ];
     }
 }
