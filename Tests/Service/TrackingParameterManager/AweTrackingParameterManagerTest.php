@@ -4,85 +4,18 @@ namespace EXS\LanderTrackingAWEBundle\Tests\Service\Formatter;
 
 use EXS\LanderTrackingAWEBundle\Service\TrackingParameterManager\AweTrackingParameterManager;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Request;
 
 class AweTrackingParameterManagerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testExtractWithoutParametersNorCookies()
+    public function testExtractFromQuery()
     {
-        $request = $this->prophesize(Request::class);
-
-        $query = $this->prophesize(ParameterBag::class);
-        $query->get('prm[campaign_id]')->willReturn(null)->shouldBeCalledTimes(1);
-        $query->get('subAffId')->willReturn(null)->shouldBeCalledTimes(1);
-
-        $request->query = $query;
-
-        $cookies = $this->prophesize(ParameterBag::class);
-        $cookies->get('cmp', 1)->willReturn(1)->shouldBeCalledTimes(1);
-        $cookies->has('exid')->willReturn(false)->shouldBeCalledTimes(1);
-
-        $request->cookies = $cookies;
-
-        $manager = new AweTrackingParameterManager(1);
-
-        $result = $manager->extract($request->reveal());
-
-        $this->assertCount(1, $result);
-
-        $this->assertArrayHasKey('cmp', $result);
-        $this->assertEquals(1, $result['cmp']);
-    }
-
-    public function testExtractWithoutParametersButCookies()
-    {
-        $request = $this->prophesize(Request::class);
-
-        $query = $this->prophesize(ParameterBag::class);
-        $query->get('prm[campaign_id]')->willReturn(null)->shouldBeCalledTimes(1);
-        $query->get('subAffId')->willReturn(null)->shouldBeCalledTimes(1);
-
-        $request->query = $query;
-
-        $cookies = $this->prophesize(ParameterBag::class);
-        $cookies->get('cmp', 1)->willReturn(123)->shouldBeCalledTimes(1);
-
-        $cookies->has('exid')->willReturn(true)->shouldBeCalledTimes(1);
-        $cookies->has('visit')->willReturn(true)->shouldBeCalledTimes(1);
-        $cookies->get('exid')->willReturn('UUID987654321')->shouldBeCalledTimes(1);
-        $cookies->get('visit')->willReturn(5)->shouldBeCalledTimes(1);
-
-        $request->cookies = $cookies;
-
-        $manager = new AweTrackingParameterManager(1);
-
-        $result = $manager->extract($request->reveal());
-
-        $this->assertCount(3, $result);
-
-        $this->assertArrayHasKey('cmp', $result);
-        $this->assertEquals(123, $result['cmp']);
-
-        $this->assertArrayHasKey('exid', $result);
-        $this->assertEquals('UUID987654321', $result['exid']);
-
-        $this->assertArrayHasKey('visit', $result);
-        $this->assertEquals(5, $result['visit']);
-    }
-
-    public function testExtractWithParameters()
-    {
-        $request = $this->prophesize(Request::class);
-
         $query = $this->prophesize(ParameterBag::class);
         $query->get('prm[campaign_id]')->willReturn(123)->shouldBeCalledTimes(1);
         $query->get('subAffId')->willReturn('UUID987654321~5')->shouldBeCalledTimes(1);
 
-        $request->query = $query;
-
         $manager = new AweTrackingParameterManager(1);
 
-        $result = $manager->extract($request->reveal());
+        $result = $manager->extractFromQuery($query->reveal());
 
         $this->assertCount(3, $result);
 
@@ -107,7 +40,7 @@ class AweTrackingParameterManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $result);
 
         $this->assertArrayHasKey('prm[campaign_id]', $result);
-        $this->assertEquals(1, $result['prm[campaign_id]']);
+        $this->assertNull($result['prm[campaign_id]']);
 
         $this->assertArrayHasKey('subAffId', $result);
         $this->assertNull($result['subAffId']);
@@ -131,5 +64,16 @@ class AweTrackingParameterManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(123, $result['prm[campaign_id]']);
         $this->assertArrayHasKey('subAffId', $result);
         $this->assertEquals('UUID987654321~5', $result['subAffId']);
+    }
+
+    public function testInitiailise()
+    {
+        $manager = new AweTrackingParameterManager(1);
+
+        $result = $manager->initialize();
+
+        $this->assertCount(1, $result);
+        $this->assertArrayHasKey('cmp', $result);
+        $this->assertEquals(1, $result['cmp']);
     }
 }
