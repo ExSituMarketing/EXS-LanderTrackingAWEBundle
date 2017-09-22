@@ -43,10 +43,10 @@ class AweTrackingParameterManager implements TrackingParameterQueryExtracterInte
 
         if (
             (null !== $subAffId = $query->get('subAffId'))
-            && (preg_match('`^(?<exid>[a-z0-9]+)~(?<visit>[a-z0-9]+)$`i', $subAffId, $matches))
+            && (preg_match('`^(?<u>[a-z0-9]+)~(?<visit>[a-z0-9]+)$`i', $subAffId, $matches))
         ) {
-            /** Get 'exid' and 'visit' from 'subAffId' query parameter. */
-            $trackingParameters['exid'] = $matches['exid'];
+            /** Get 'u' and 'visit' from 'subAffId' query parameter. */
+            $trackingParameters['u'] = $matches['u'];
             $trackingParameters['visit'] = $matches['visit'];
         }
 
@@ -60,12 +60,12 @@ class AweTrackingParameterManager implements TrackingParameterQueryExtracterInte
     {
         $subAffId = null;
         if (
-            $trackingParameters->has('exid')
+            $trackingParameters->has('u')
             && $trackingParameters->has('visit')
         ) {
             $subAffId = sprintf(
                 '%s~%s',
-                $trackingParameters->get('exid'),
+                $trackingParameters->get('u'),
                 $trackingParameters->get('visit')
             );
         }
