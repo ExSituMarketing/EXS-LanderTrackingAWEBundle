@@ -37,17 +37,17 @@ class AweTrackingParameterManager implements TrackingParameterQueryExtracterInte
         $trackingParameters = [];
 
         if (null !== $cmp = $query->get('prm[campaign_id]')) {
-            /** Get 'cmp' from 'prm[campaign_id]' query parameter. */
-            $trackingParameters['cmp'] = $cmp;
+            /** Get 'c' from 'prm[campaign_id]' query parameter. */
+            $trackingParameters['c'] = $cmp;
         }
 
         if (
             (null !== $subAffId = $query->get('subAffId'))
-            && (preg_match('`^(?<u>[a-z0-9]+)~(?<visit>[a-z0-9]+)$`i', $subAffId, $matches))
+            && (preg_match('`^(?<u>[a-z0-9]+)~(?<v>[a-z0-9]+)$`i', $subAffId, $matches))
         ) {
-            /** Get 'u' and 'visit' from 'subAffId' query parameter. */
+            /** Get 'u' and 'v' from 'subAffId' query parameter. */
             $trackingParameters['u'] = $matches['u'];
-            $trackingParameters['visit'] = $matches['visit'];
+            $trackingParameters['v'] = $matches['v'];
         }
 
         return $trackingParameters;
@@ -61,17 +61,17 @@ class AweTrackingParameterManager implements TrackingParameterQueryExtracterInte
         $subAffId = null;
         if (
             $trackingParameters->has('u')
-            && $trackingParameters->has('visit')
+            && $trackingParameters->has('v')
         ) {
             $subAffId = sprintf(
                 '%s~%s',
                 $trackingParameters->get('u'),
-                $trackingParameters->get('visit')
+                $trackingParameters->get('v')
             );
         }
 
         return [
-            'prm[campaign_id]' => $trackingParameters->get('cmp'),
+            'prm[campaign_id]' => $trackingParameters->get('c'),
             'subAffId' => $subAffId,
         ];
     }
@@ -82,7 +82,7 @@ class AweTrackingParameterManager implements TrackingParameterQueryExtracterInte
     public function initialize()
     {
         return [
-            'cmp' => $this->defaultCmp,
+            'c' => $this->defaultCmp,
         ];
     }
 }
