@@ -24,7 +24,7 @@ Download the bundle using composer
 $ composer require exs/lander-tracking-awe-bundle
 ```
 
-Enable the bundle
+Enable the bundle, and the _EXS-LanderTrackingHouseBundle_ that is installed as a requirement.
 
 ```php
 <?php
@@ -34,6 +34,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
+        new EXS\LanderTrackingHouseBundle\EXSLanderTrackingHouseBundle(),
         new EXS\LanderTrackingAWEBundle\EXSLanderTrackingAWEBundle(),
         // ...
     );
@@ -63,4 +64,4 @@ Example :
     <!-- Will generate : "http://www.test.tld?foo=bar&prm[campaign_id]=123&subAffId=987654321~5" -->
 ```
 
-See `EXS-LanderTrackingHouseBundle`'s documentation for more information.
+See [EXS-LanderTrackingHouseBundle's documentation](https://github.com/ExSituMarketing/EXS-LanderTrackingHouseBundle/blob/master/README.md) for more information.
