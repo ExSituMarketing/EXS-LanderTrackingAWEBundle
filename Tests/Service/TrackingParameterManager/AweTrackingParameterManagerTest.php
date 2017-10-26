@@ -10,17 +10,14 @@ class AweTrackingParameterManagerTest extends \PHPUnit_Framework_TestCase
     public function testExtractFromQuery()
     {
         $query = $this->prophesize(ParameterBag::class);
-        $query->get('prm[campaign_id]')->willReturn(123)->shouldBeCalledTimes(1);
+        $query->get('prm')->willReturn(123)->shouldBeCalledTimes(1);
         $query->get('subAffId')->willReturn('UUID987654321~5')->shouldBeCalledTimes(1);
 
         $manager = new AweTrackingParameterManager(1);
 
         $result = $manager->extractFromQuery($query->reveal());
 
-        $this->assertCount(3, $result);
-
-        $this->assertArrayHasKey('c', $result);
-        $this->assertEquals(123, $result['c']);
+        $this->assertCount(2, $result);
 
         $this->assertArrayHasKey('u', $result);
         $this->assertEquals('UUID987654321', $result['u']);
