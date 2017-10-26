@@ -36,7 +36,10 @@ class AweTrackingParameterManager implements TrackingParameterQueryExtracterInte
     {
         $trackingParameters = [];
 
-        if (null !== $cmp = $query->get('prm[campaign_id]')) {
+        /* PRM is an array */
+        $parameterPRM = $query->get('prm');
+
+        if (null !== $cmp = $parameterPRM['campaign_id']) {
             /** Get 'c' from 'prm[campaign_id]' query parameter. */
             $trackingParameters['c'] = $cmp;
         }
@@ -49,7 +52,6 @@ class AweTrackingParameterManager implements TrackingParameterQueryExtracterInte
             $trackingParameters['u'] = $matches['u'];
             $trackingParameters['v'] = $matches['v'];
         }
-
         return $trackingParameters;
     }
 
