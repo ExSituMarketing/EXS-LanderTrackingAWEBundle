@@ -36,8 +36,6 @@ class AweTrackingParameterManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(2, $result);
 
-        $this->assertArrayHasKey('prm[campaign_id]', $result);
-        $this->assertNull($result['prm[campaign_id]']);
 
         $this->assertArrayHasKey('subAffId', $result);
         $this->assertNull($result['subAffId']);
@@ -57,8 +55,6 @@ class AweTrackingParameterManagerTest extends \PHPUnit_Framework_TestCase
         $result = $manager->format($trackingParameters);
 
         $this->assertCount(2, $result);
-        $this->assertArrayHasKey('prm[campaign_id]', $result);
-        $this->assertEquals(123, $result['prm[campaign_id]']);
         $this->assertArrayHasKey('subAffId', $result);
         $this->assertEquals('UUID987654321~5', $result['subAffId']);
     }
