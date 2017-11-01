@@ -2,10 +2,10 @@
 
 namespace EXS\LanderTrackingAWEBundle\Service\TrackingParameterManager;
 
-use Symfony\Component\HttpFoundation\ParameterBag;
 use EXS\LanderTrackingHouseBundle\Service\TrackingParameterManager\TrackingParameterFormatterInterface;
 use EXS\LanderTrackingHouseBundle\Service\TrackingParameterManager\TrackingParameterInitializerInterface;
 use EXS\LanderTrackingHouseBundle\Service\TrackingParameterManager\TrackingParameterQueryExtracterInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
  * Class AweTrackingParameterManager
@@ -52,6 +52,7 @@ class AweTrackingParameterManager implements TrackingParameterQueryExtracterInte
             $trackingParameters['u'] = $matches['u'];
             $trackingParameters['v'] = $matches['v'];
         }
+
         return $trackingParameters;
     }
 
@@ -74,8 +75,30 @@ class AweTrackingParameterManager implements TrackingParameterQueryExtracterInte
 
         return [
             'prm[campaign_id]' => $trackingParameters->get('c'),
-            'subAffId' => $subAffId,
+            'subAffId'         => $subAffId,
         ];
+    }
+
+    /**
+     * @param  $parameters
+     *
+     * @return ParameterBag
+     */
+    public function checkFormat($parameters)
+    {
+        foreach ($parameters as $key => $parameterItem) {
+            if (is_array($parameterItem)) {
+                if (
+                    ($parameters['prm[campaign_id]'] != null)
+                    &&
+                    ($parameterItem['campaign_id'] == '{cmp}')
+                ) {
+                    $parameters[$key]['campaign_id'] = $parameters['prm[campaign_id]'];
+                }
+            }
+        }
+        unset($parameters['prm[campaign_id]']);
+        return $parameters;
     }
 
     /**
