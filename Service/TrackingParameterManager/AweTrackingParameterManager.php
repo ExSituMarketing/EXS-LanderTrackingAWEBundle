@@ -95,9 +95,9 @@ class AweTrackingParameterManager implements TrackingParameterQueryExtracterInte
                 ) {
                     $parameters[$key]['campaign_id'] = $parameters['prm[campaign_id]'];
                 }
+                unset($parameters[$key]);
             }
         }
-        unset($parameters['prm[campaign_id]']);
         return $parameters;
     }
 
